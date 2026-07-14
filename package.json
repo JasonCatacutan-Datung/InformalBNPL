@@ -12,7 +12,8 @@
     "lint": "eslint",
     "test": "vitest run",
     "test:unit": "vitest run test/unit",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "ocr:smoke": "node --conditions=react-server --experimental-strip-types scripts/ocr-smoke.ts"
   },
   "dependencies": {
     "@simplewebauthn/browser": "^13.3.0",
@@ -20,6 +21,7 @@
     "@supabase/ssr": "^0.12.0",
     "@supabase/supabase-js": "^2.108.2",
     "@tesseract.js-data/eng": "^1.0.0",
+    "@tesseract.js-data/fil": "^1.0.0",
     "clsx": "^2.1.1",
     "jsqr": "^1.4.0",
     "lucide-react": "^1.21.0",
@@ -28,6 +30,7 @@
     "qrcode": "^1.5.4",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "sharp": "^0.34.4",
     "tailwind-merge": "^3.6.0",
     "tesseract.js": "^7.0.0"
   },

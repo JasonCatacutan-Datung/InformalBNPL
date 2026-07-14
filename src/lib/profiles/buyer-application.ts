@@ -4,17 +4,11 @@
  * branch. Shared by the application form and the operator review screen.
  */
 
-export const ID_TYPES = [
-  "PhilSys (National ID)",
-  "UMID",
-  "Driver's License",
-  "Passport",
-  "Voter's ID",
-  "Postal ID",
-  "PRC ID",
-  "SSS/GSIS ID",
-  "Other",
-] as const;
+import { PH_ID_TYPES } from "@/lib/ids/ph-ids";
+
+// The canonical PH IDs (single source of truth in lib/ids/ph-ids), plus a
+// catch-all "Other" for the long tail the form still accepts.
+export const ID_TYPES = [...PH_ID_TYPES, "Other"] as const;
 
 export const SELL_CHANNELS = [
   "Facebook",
