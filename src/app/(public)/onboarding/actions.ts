@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getConfig } from "@/lib/config/system-config";
-import { validateIdNumber } from "@/lib/profiles/id-validation";
+import { validateIdNumber, normalizeIdNumber } from "@/lib/ids/ph-ids";
 import { recordSellerReferral } from "@/lib/referrals/seller-referrals";
 import { recordDocumentAcceptance, clientIp } from "@/lib/legal/acceptance";
 import { recordLocationEvent } from "@/lib/location/events";
@@ -161,7 +161,9 @@ export async function applyAsBuyer(formData: FormData) {
     city: str(formData, "city") || undefined,
     province: str(formData, "province") || undefined,
     id_type: idType,
-    id_number: idNumber,
+    // Store the normalized number (separators stripped, uppercased) so review,
+    // OCR cross-check, and duplicate-ID detection all see one canonical form.
+    id_number: normalizeIdNumber(idNumber),
     proof_of_billing_path: proofOfBillingPath,
     ewallet_provider: str(formData, "ewallet_provider") || undefined,
     ewallet_number: str(formData, "ewallet_number") || undefined,

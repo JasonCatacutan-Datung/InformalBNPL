@@ -6,6 +6,7 @@ import type { NextConfig } from "next";
 // worker_thread, which file-tracing can't detect).
 const OCR_TRACE_INCLUDES = [
   "./node_modules/@tesseract.js-data/eng/**",
+  "./node_modules/@tesseract.js-data/fil/**",
   "./node_modules/tesseract.js-core/**",
   "./node_modules/tesseract.js/**",
   "./node_modules/bmp-js/**",
@@ -16,9 +17,10 @@ const OCR_TRACE_INCLUDES = [
 ];
 
 const nextConfig: NextConfig = {
-  // tesseract.js uses worker threads + WASM; keep it external so Next doesn't
-  // try to bundle it into the server build (OCR runs in operator-side actions).
-  serverExternalPackages: ["tesseract.js"],
+  // tesseract.js uses worker threads + WASM and sharp is a native (libvips)
+  // addon; keep both external so Next doesn't try to bundle them into the server
+  // build (OCR + image preprocessing run in operator-side actions).
+  serverExternalPackages: ["tesseract.js", "sharp"],
   // OCR loads the worker, core wasm and language data from node_modules at
   // runtime via dynamic paths, which file-tracing can't detect — force-include
   // them in the operator review route bundles so OCR works on Vercel.

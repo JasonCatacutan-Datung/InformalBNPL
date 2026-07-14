@@ -1,5 +1,6 @@
 import "server-only";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { normalizeIdNumber } from "@/lib/ids/ph-ids";
 
 /**
  * Lightweight duplicate / collusion signals for the review queues. Catches the
@@ -40,7 +41,9 @@ export async function fraudFlagsForUsers(
   const idNoOf = new Map<string, string>();
   for (const b of buyers ?? []) {
     const app = (b.application as Record<string, unknown> | null) ?? null;
-    const idno = String(app?.id_number ?? "").trim().toLowerCase();
+    // Normalize (strip separators, uppercase) so "1234-5678" and "12345678"
+    // collide even if older rows were stored before normalization on submit.
+    const idno = normalizeIdNumber(String(app?.id_number ?? ""));
     if (!idno) continue;
     idNoOf.set(b.user_id, idno);
     if (!byIdNo.has(idno)) byIdNo.set(idno, new Set());

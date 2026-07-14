@@ -20,7 +20,7 @@ import {
   type BuyerKind,
 } from "@/lib/profiles/buyer-application";
 import PhLocation from "@/app/(public)/onboarding/PhLocation";
-import { idHint, validateIdNumber } from "@/lib/profiles/id-validation";
+import { idHint, validateIdNumber, idNumberWarning } from "@/lib/ids/ph-ids";
 import { Field, TextInput, Select, controlClasses } from "@/components/ui/Field";
 import ChoiceCards from "@/components/ui/ChoiceCards";
 import CheckboxGroup from "@/components/ui/CheckboxGroup";
@@ -54,6 +54,9 @@ export default function BuyerApplicationForm({ next }: { next?: string }) {
   // step via native validity, instead of a round-trip that wipes the form.
   const idInputRef = useRef<HTMLInputElement>(null);
   const idError = idType && idNumber ? validateIdNumber(idType, idNumber) : null;
+  // Soft warning for moderate-confidence formats — shown as a non-blocking hint
+  // (never fed into setCustomValidity, so it doesn't block the step).
+  const idWarn = idType && idNumber ? idNumberWarning(idType, idNumber) : null;
   useEffect(() => {
     idInputRef.current?.setCustomValidity(idError ?? "");
   }, [idError]);
@@ -159,7 +162,10 @@ export default function BuyerApplicationForm({ next }: { next?: string }) {
             <Field
               label="ID number"
               error={idError}
-              hint={idHint(idType) ? `Format: ${idHint(idType)}` : undefined}
+              hint={
+                idWarn ??
+                (idHint(idType) ? `Format: ${idHint(idType)}` : undefined)
+              }
             >
               <TextInput
                 name="id_number"

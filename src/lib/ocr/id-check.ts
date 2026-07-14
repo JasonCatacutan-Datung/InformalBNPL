@@ -8,11 +8,15 @@
  * closer", not "reject".
  */
 
+import type { PhIdType } from "@/lib/ids/ph-ids";
+
 const norm = (s: string) => s.toLowerCase().replace(/\s+/g, " ");
 const digits = (s: string) => s.replace(/\D/g, "");
 
-// Keywords expected on each PH ID (lowercase, matched loosely).
-const ID_KEYWORDS: Record<string, string[]> = {
+// Keywords expected on each PH ID (lowercase, matched loosely). Keyed by the
+// canonical PhIdType labels so this map stays in lockstep with lib/ids/ph-ids —
+// the Record type makes a missing/renamed key a compile error.
+const ID_KEYWORDS: Record<PhIdType, string[]> = {
   "PhilSys (National ID)": ["philsys", "pambansang", "national id", "pcn", "republika ng pilipinas"],
   UMID: ["umid", "unified multi", "sss", "gsis", "social security"],
   "Driver's License": ["driver", "license", "licence", "land transportation", "lto", "non-professional", "professional"],
@@ -42,7 +46,7 @@ export function crossCheckId(
   // digits to be meaningful.
   const idNumberFound = wanted.length >= 6 && textDigits.includes(wanted);
 
-  const keywords = ID_KEYWORDS[idType] ?? [];
+  const keywords = ID_KEYWORDS[idType as PhIdType] ?? [];
   const typeKeywordFound =
     keywords.length === 0 ? true : keywords.some((k) => text.includes(k));
 

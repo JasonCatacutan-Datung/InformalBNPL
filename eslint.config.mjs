@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Throwaway/dev scripts run directly via `node` with a `.ts` import
+    // extension — not part of the app build, so keep them out of lint.
+    "scripts/**",
   ]),
 ]);
 
